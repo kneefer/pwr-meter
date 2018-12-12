@@ -1,13 +1,70 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>app</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.js"></script>
 </head>
+
 <body>
-<h1>Welcome to app</h1>
-<ul>
-    <li><h3><a href="/api-explorer/">Interactive API Doc!</a></h3></li>
-</ul>
+    <h1>Welcome to app</h1>
+    <ul>
+        <li>
+            <h3><a href="/api-explorer/">Interactive API Doc!</a></h3>
+        </li>
+    </ul>
+
+    <div class="chart-container" style="position: relative; height:40vh; width:80vw">
+        <canvas id="myChart"></canvas>
+    </div>
+
+    <script>
+        (async function () {
+            const resp = await fetch('http://localhost:3000/api/v1/readings');
+            if (resp.status !== 200) {
+                console.log('Error downloading data');
+                return;
+            }
+
+            const data = await resp.json();
+            const parsedData = data.map(rec => ({
+                t: moment(rec.date),
+                y: +rec.totalPulses
+            }))
+
+
+            var ctx = document.getElementById("myChart");
+            var myChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    datasets: [{
+                        label: '#',
+                        backgroundColor: 'rgb(255, 99, 132)',
+                        borderColor: 'rgb(255, 99, 132)',
+                        fill: false,
+                        data: parsedData
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        xAxes: [{
+                            display: true,
+                            type: 'time',
+                            time: {
+                                unit: 'hour'
+                            }
+                        }],
+                        yAxes: [{
+                            display: true,
+                        }]
+                    }
+                }
+            });
+        })();
+    </script>
 </body>
+
 </html>
