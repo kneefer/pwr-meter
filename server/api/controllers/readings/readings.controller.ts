@@ -15,7 +15,7 @@ export class ReadingsController {
 
     const readingsAbsolutePath = path.join(__dirname, readingsRelativePath);
     const files = await readdir(readingsAbsolutePath);
-    const newestDayFile = files.sort()[0];
+    const newestDayFile = files.sort().reverse()[0];
     const fileContent = await readfile(`${readingsAbsolutePath}/${newestDayFile}`, 'utf8');
     csvParse(fileContent, { delimiter: ',', }, function(err, output) {
       const dataParsed = output.map(x => ({date: x[0], totalPulses: x[1]}))
