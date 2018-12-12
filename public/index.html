@@ -22,7 +22,7 @@
 
     <script>
         (async function () {
-            const resp = await fetch('http://localhost:3000/api/v1/readings');
+            const resp = await fetch(`${window.location.origin}/api/v1/readings`);
             if (resp.status !== 200) {
                 console.log('Error downloading data');
                 return;
